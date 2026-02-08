@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Elige tu Arma</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .weapon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .weapon-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f7f7f7;
+            text-align: center;
+        }
+
+        .weapon-card button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .weapon-card button:hover {
+            background-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="menu :: menu"></div>
+
+<h1>Elige tu Arma</h1>
+
+<div class="weapon-grid">
+    <div th:each="w : ${weapons}" class="weapon-card">
+        <h3 th:text="${w.name}"></h3>
+        <p><strong>Pack:</strong> <span th:text="${w.packId}"></span></p>
+        <p th:text="${w.description}"></p>
+
+        <form action="/select-weapon" method="post">
+            <input type="hidden" name="weaponId" th:value="${w.weaponId}">
+            <button type="submit">Elegir</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

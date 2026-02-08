@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Usuarios</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .user-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .user-card p {
+            margin: 5px 0;
+        }
+
+        .role {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .admin {
+            color: darkred;
+        }
+
+        .player {
+            color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Usuarios del Sistema</h1>
+
+<div th:each="u : ${usuarios}" class="user-card">
+
+    <p><strong>ID:</strong> <span th:text="${u.userId}"></span></p>
+
+    <p><strong>Nombre:</strong> <span th:text="${u.name}"></span></p>
+
+    <p><strong>Email:</strong> <span th:text="${u.email}"></span></p>
+
+    <p>
+        <strong>Rol:</strong>
+        <span class="role"
+              th:text="${u.role}"
+              th:classappend="${u.role == 'ADMIN'} ? ' admin' : ' player'">
+        </span>
+    </p>
+
+    <p><strong>Baneado:</strong> <span th:text="${u.banned}"></span></p>
+
+    <p><strong>Foto ID:</strong> <span th:text="${u.pictureId}"></span></p>
+
+</div>
+
+</body>
+</html>

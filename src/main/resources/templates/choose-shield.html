@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Elige tu Escudo</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .shield-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .shield-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f7f7f7;
+            text-align: center;
+        }
+
+        .shield-card button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            background-color: #ffc107;
+            color: black;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .shield-card button:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="menu :: menu"></div>
+
+<h1>Elige tu Escudo</h1>
+
+<div class="shield-grid">
+    <div th:each="s : ${shields}" class="shield-card">
+        <h3 th:text="${s.name}"></h3>
+        <p><strong>Pack:</strong> <span th:text="${s.packId}"></span></p>
+        <p><strong>Armor Class:</strong> <span th:text="${s.armorClass}"></span></p>
+        <p><strong>Dodge Bonus:</strong> <span th:text="${s.dodgeBonus}"></span></p>
+        <p th:text="${s.description}"></p>
+
+        <form action="/select-shield" method="post">
+            <input type="hidden" name="shieldId" th:value="${s.shieldId}">
+            <button type="submit">Elegir</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

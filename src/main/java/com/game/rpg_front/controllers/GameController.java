@@ -1,36 +1,81 @@
 package com.game.rpg_front.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.game.rpg_front.services.HeroService;
+import com.game.rpg_front.services.ShieldService;
+import com.game.rpg_front.services.VillainService;
+import com.game.rpg_front.services.WeaponService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class GameController {
 
-    @GetMapping("/game")
-    public String game(Model model) {
-        // Aquí podrías pasar datos al HTML como model.addAttribute()
-        // Creamos el usuario "de mentira" para que la web cargue
-//      Usuario user = new Usuario("Geralt_De_Rivia", "Guerrero", null, true);
-      
-      // Enviamos los datos al HTML
-//      model.addAttribute("usuario", user);
-//      
-//      // Enviamos listas vacías para que los bucles (th:each) no den error
-//      model.addAttribute("criaturas", new ArrayList<>());
-//      model.addAttribute("misRuns", new ArrayList<>());
-//      model.addAttribute("eventos", new ArrayList<>());
-//      
-//      // Variables de estado mínimas
-//      model.addAttribute("progreso", 0);
-//      model.addAttribute("esPlayback", false);
-//      model.addAttribute("derrota", false);
-//      model.addAttribute("combateTerminado", true);
+    @Autowired
+    private HeroService heroService;
 
-    	return "game";
-
-
+    @GetMapping("/choose-hero")
+    public String chooseHero(Model model) {
+        model.addAttribute("heroes", heroService.getAllHeroes());
+        return "choose-hero";
     }
 
+    @PostMapping("/select-hero")
+    public String selectHero(@RequestParam String heroId, HttpSession session) {
+        session.setAttribute("selectedHero", heroId);
+        return "redirect:/choose-weapon";
+    }
+    
+    @Autowired
+    private WeaponService weaponService;
 
+    @GetMapping("/choose-weapon")
+    public String chooseWeapon(Model model) {
+        model.addAttribute("weapons", weaponService.getAllWeapons());
+        return "choose-weapon";
+    }
+
+    @PostMapping("/select-weapon")
+    public String selectWeapon(@RequestParam String weaponId, HttpSession session) {
+        session.setAttribute("selectedWeapon", weaponId);
+        return "redirect:/choose-shield";
+    }
+
+    @Autowired
+    private ShieldService shieldService;
+
+    @GetMapping("/choose-shield")
+    public String chooseShield(Model model) {
+        model.addAttribute("shields", shieldService.getAllShields());
+        return "choose-shield";
+    }
+
+    @PostMapping("/select-shield")
+    public String selectShield(@RequestParam String shieldId, HttpSession session) {
+        session.setAttribute("selectedShield", shieldId);
+        return "redirect:/choose-villain";
+    }
+
+    @Autowired
+    private VillainService villainService;
+
+    @GetMapping("/choose-villain")
+    public String chooseVillain(Model model) {
+        model.addAttribute("villains", villainService.getAllVillains());
+        return "choose-villain";
+    }
+
+    @PostMapping("/select-villain")
+    public String selectVillain(@RequestParam String villainId, HttpSession session) {
+        session.setAttribute("selectedVillain", villainId);
+        return "redirect:/combat";
+    }
+
+    
 }

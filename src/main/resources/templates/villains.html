@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Villanos</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .villain-card {
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background-color: #f3f3f3;
+        }
+
+        .villain-card p {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="menu :: menu"></div>
+
+<h1>Listado de Villanos</h1>
+
+<div th:each="v : ${villains}" class="villain-card">
+    <p><strong>Nombre:</strong> <span th:text="${v.name}"></span></p>
+    <p><strong>Categoría:</strong> <span th:text="${v.categoryId}"></span></p>
+</div>
+
+</body>
+</html>

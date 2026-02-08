@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Escudos</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .shield-card {
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background-color: #f3f3f3;
+        }
+
+        .shield-card p {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="menu :: menu"></div>
+
+<h1>Listado de Escudos</h1>
+
+<div th:each="s : ${shields}" class="shield-card">
+    <p><strong>Nombre:</strong> <span th:text="${s.name}"></span></p>
+    <p><strong>Pack:</strong> <span th:text="${s.packId}"></span></p>
+    <p><strong>ID:</strong> <span th:text="${s.shieldId}"></span></p>
+    <p><strong>Armor Class:</strong> <span th:text="${s.armorClass}"></span></p>
+    <p><strong>Dodge Bonus:</strong> <span th:text="${s.dodgeBonus}"></span></p>
+    <p><strong>Descripción:</strong></p>
+    <p th:text="${s.description}"></p>
+</div>
+
+</body>
+</html>
