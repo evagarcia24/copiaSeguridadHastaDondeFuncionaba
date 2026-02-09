@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Historias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div class="container">
+        <header class="main-header">
+            <h1>Panel de Historias</h1>
+            <a th:href="@{/stories/new}" class="btn btn-primary">
+                <span>+</span> Nueva Historia
+            </a>
+        </header>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pack</th>
+                        <th>Categorías</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(stories)}">
+                        <td colspan="4" class="empty-state">No hay historias disponibles.</td>
+                    </tr>
+                    
+                    <tr th:each="story : ${stories}">
+                        <td class="font-bold" th:text="${story.storyId}"></td>
+                        <td>
+                            <span class="badge badge-pack" th:text="${'Pack ' + story.packId}"></span>
+                        </td>
+                        <td th:text="${story.categories}"></td>
+                        <td class="actions">
+                            <form th:action="@{/stories/delete/{id}(id=${story.storyId})}" method="post" 
+                                  onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta historia?');">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

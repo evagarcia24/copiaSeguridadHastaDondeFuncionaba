@@ -25,6 +25,12 @@
             <p class="subtitle">Sobrevive al trámite, si puedes.</p>
         </div>
 
+        <!-- ⭐ MENSAJES DE ERROR (LO QUE FALTABA) ⭐ -->
+        <div th:if="${error}" class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}"></span>
+        </div>
+
         <!-- Formulario de Login -->
         <form th:action="@{/login}" method="post" class="login-form">
 
@@ -34,7 +40,7 @@
                     <i class="fas fa-user"></i>
                     Usuario o Email
                 </label>
-                <input type="text" id="usuario" name="usuario"
+                <input type="text" id="usuario" name="username"
                        placeholder="Introduce tu usuario o email"
                        required autocomplete="username" autofocus>
             </div>
@@ -82,7 +88,7 @@
             <p>&copy; 2026. Todos los derechos reservados.</p>
         </div>
 
-    </div> <!-- cierre correcto de login-box -->
+    </div>
 </div>
 
 <!-- Modal de Términos y Condiciones -->
@@ -91,7 +97,7 @@
         <h2>Términos y Condiciones</h2>
         <p>
             Aquí puedes poner el texto legal que quieras: normas del juego, política de uso,
-            comportamiento permitido, etc.  
+            comportamiento permitido, etc.
             Este texto puede ser tan largo como necesites.
         </p>
 

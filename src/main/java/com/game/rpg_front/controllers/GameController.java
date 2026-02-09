@@ -76,6 +76,60 @@ public class GameController {
         session.setAttribute("selectedVillain", villainId);
         return "redirect:/combat";
     }
+    
+//    @GetMapping("/combat")
+//    public String combat(Model model, HttpSession session) {
+//
+//        String heroId = (String) session.getAttribute("selectedHero");
+//        String weaponId = (String) session.getAttribute("selectedWeapon");
+//        String shieldId = (String) session.getAttribute("selectedShield");
+//        String villainId = (String) session.getAttribute("selectedVillain");
+//
+//        // Recuperar objetos completos
+//        var hero = heroService.getAllHeroes().stream()
+//                .filter(h -> h.getHeroId().equals(heroId))
+//                .findFirst().orElse(null);
+//
+//        var weapon = weaponService.getAllWeapons().stream()
+//                .filter(w -> w.getWeaponId().equals(weaponId))
+//                .findFirst().orElse(null);
+//
+//        var shield = shieldService.getAllShields().stream()
+//                .filter(s -> s.getShieldId().equals(shieldId))
+//                .findFirst().orElse(null);
+//
+//        var villain = villainService.getAllVillains().stream()
+//                .filter(v -> v.getVillainId().equals(villainId))
+//                .findFirst().orElse(null);
+//
+//        // Simulación simple del combate
+//        String log = "";
+//        String winner = "";
+//
+//        int heroPower = hero.getPower() + weapon.getDescription().length() % 5 + shield.getArmorClass();
+//        int villainPower = villain.getPower() + villain.getDescription().length() % 5;
+//
+//        if (heroPower >= villainPower) {
+//            winner = hero.getName();
+//            log = hero.getName() + " derrota a " + villain.getName() + " con su " + weapon.getName() + "!";
+//        } else {
+//            winner = villain.getName();
+//            log = villain.getName() + " derrota a " + hero.getName() + " sin piedad.";
+//        }
+//
+//        model.addAttribute("hero", hero);
+//        model.addAttribute("weapon", weapon);
+//        model.addAttribute("shield", shield);
+//        model.addAttribute("villain", villain);
+//        model.addAttribute("winner", winner);
+//        model.addAttribute("log", log);
 
+//        return "combat";
+//    }
+
+    @GetMapping("/game")
+    public String mostrarGame() {
+        return "game-test";  // ← Cambia "game" por "game-test"
+    }
     
 }

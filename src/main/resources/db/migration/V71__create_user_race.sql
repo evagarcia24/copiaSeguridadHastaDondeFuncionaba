@@ -1,7 +1,7 @@
--- V71__create_custom_race.sql
+-- V71__create_user_race.sql
 
-CREATE TABLE custom_race (
-    custom_race_id RAW(16) NOT NULL,
+CREATE TABLE user_race (
+    user_race_id RAW(16) NOT NULL,
     user_id RAW(16) NOT NULL,
     origin VARCHAR2(20 CHAR) NOT NULL,
     name VARCHAR2(64 CHAR) NOT NULL,
@@ -11,13 +11,13 @@ CREATE TABLE custom_race (
     base_defense NUMBER(10),
     base_speed NUMBER(10),
 
-    CONSTRAINT pk_custom_race
-        PRIMARY KEY (custom_race_id),
+    CONSTRAINT pk_user_race
+        PRIMARY KEY (user_race_id),
 
-    CONSTRAINT fk_custom_race_user
+    CONSTRAINT fk_user_race_user
         FOREIGN KEY (user_id)
         REFERENCES app_user(user_id),
 
-    CONSTRAINT chk_custom_race_origin
+    CONSTRAINT chk_user_race_origin
         CHECK (origin IN ('SYSTEM', 'CUSTOM'))
 );

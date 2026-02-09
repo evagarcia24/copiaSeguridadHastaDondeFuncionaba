@@ -1,0 +1,150 @@
+/* Heredamos tus estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: url('../img/bg-rpg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Permite scroll */
+    position: relative;
+    color: #fff;
+    overflow-y: auto;
+}
+
+.background-overlay {
+    position: fixed; /* Fixed para que cubra siempre al hacer scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+
+.main-container {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.content-box {
+    background: rgba(20, 20, 20, 0.9);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Header Estilo RPG */
+.login-header i {
+    font-size: 50px;
+    color: #f1c40f;
+    text-shadow: 0 0 10px #f1c40f;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.login-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: #fff;
+}
+
+.actions-bar {
+    margin-bottom: 25px;
+    text-align: right;
+}
+
+/* Botón Estilo Login */
+.btn-rpg {
+    background: transparent;
+    border: 1px solid #f1c40f;
+    padding: 10px 20px;
+    color: #f1c40f;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    transition: 0.3s;
+}
+
+.btn-rpg:hover {
+    background: #f1c40f;
+    color: #000;
+    box-shadow: 0 0 12px #f1c40f;
+}
+
+/* Estilo de la Tabla */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.rpg-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: rgba(10, 10, 10, 0.5);
+}
+
+.rpg-table th {
+    font-family: 'Cinzel', serif;
+    color: #f1c40f;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #f1c40f;
+    font-size: 14px;
+}
+
+.rpg-table td {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    font-size: 15px;
+}
+
+.rpg-table tr:hover {
+    background: rgba(241, 196, 15, 0.05);
+}
+
+.gold-text {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+/* Botón Eliminar pequeño */
+.btn-delete {
+    background: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-delete:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+.login-footer {
+    margin-top: 30px;
+    font-size: 12px;
+    opacity: 0.6;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

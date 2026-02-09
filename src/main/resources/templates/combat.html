@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Combate</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .combat-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            width: 45%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f7f7f7;
+        }
+
+        .winner-box {
+            padding: 15px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .log-box {
+            padding: 15px;
+            background-color: #e2e3e5;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="menu :: menu"></div>
+
+<h1>Combate</h1>
+
+<div class="combat-container">
+    <div class="card">
+        <h2>Héroe</h2>
+        <p><strong>Nombre:</strong> <span th:text="${hero.name}"></span></p>
+        <p><strong>Arma:</strong> <span th:text="${weapon.name}"></span></p>
+        <p><strong>Escudo:</strong> <span th:text="${shield.name}"></span></p>
+    </div>
+
+    <div class="card">
+        <h2>Villano</h2>
+        <p><strong>Nombre:</strong> <span th:text="${villain.name}"></span></p>
+        <p><strong>Descripción:</strong> <span th:text="${villain.description}"></span></p>
+    </div>
+</div>
+
+<div class="winner-box">
+    <h2>Ganador: <span th:text="${winner}"></span></h2>
+</div>
+
+<div class="log-box">
+    <h3>Resumen del combate</h3>
+    <p th:text="${log}"></p>
+</div>
+
+</body>
+</html>

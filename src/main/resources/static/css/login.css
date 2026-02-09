@@ -298,6 +298,32 @@ input:focus {
 }
 
 /* ============================
+   VALIDACION Y ERRORES
+============================ */
+.error-message {
+    background-color: #ff4444;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    animation: shake 0.3s;
+}
+
+.error-message i {
+    font-size: 18px;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* ============================
    FOOTER
 ============================ */
 .login-footer {
