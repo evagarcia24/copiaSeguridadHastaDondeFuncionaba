@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.game.rpg_front.services.UserService;
 
+import es.cursojava.hibernate.ejercicio2.exception.BusinessException;
+
 
 @Controller
 public class RegisterController {
@@ -24,7 +26,7 @@ public class RegisterController {
 
         if (!password.equals(confirm)) {
             model.addAttribute("error", "Las contraseñas no coinciden");
-            return "registro"; // tu plantilla registro.html
+            return "register"; // tu plantilla registrer.html
         }
 
         UsuarioDTO dto = new UsuarioDTO();
