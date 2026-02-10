@@ -16,7 +16,7 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/login")  // ← ESTO FALTABA
+    @PostMapping("/login")  
     public String procesarLogin(
             @RequestParam String username,
             @RequestParam String password,

@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 * {
     margin: 0;
     padding: 0;
@@ -136,37 +138,6 @@ input:focus {
 }
 
 /* ============================
-   OPCIONES
-============================ */
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-size: 13px;
-}
-
-.checkbox-container input {
-    margin-right: 6px;
-}
-
-.forgot-password {
-    color: #f1c40f;
-    font-size: 13px;
-    text-decoration: none;
-}
-
-.forgot-password:hover {
-    text-decoration: underline;
-}
-
-/* ============================
    BOTÓN LOGIN
 ============================ */
 .btn-login {
@@ -297,31 +268,48 @@ input:focus {
     box-shadow: 0 0 12px #f1c40f;
 }
 
-/* ============================
-   VALIDACION Y ERRORES
-============================ */
+/* =========================================
+   MENSAJE DE ERROR USUARIO NO DADO DE ALTA
+=========================================== */
+
 .error-message {
-    background-color: #ff4444;
-    color: white;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    background: rgba(255, 80, 80, 0.15);
+    border: 1px solid #ef4444;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 15px;
+    text-align: center;
+    color: #ff4d4d; /* 🔥 rojo fuerte */
+    font-weight: bold;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    animation: shake 0.3s;
+    justify-content: center;
+    gap: 8px;
 }
 
 .error-message i {
-    font-size: 18px;
+    color: #ff4d4d;
 }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
+
+/* ============================
+   LOOGING ERROR
+============================ */
+
+.login-error {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    color: #ff4d4d;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
 }
+
+
+
 
 /* ============================
    FOOTER

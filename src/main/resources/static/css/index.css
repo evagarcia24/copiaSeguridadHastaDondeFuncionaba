@@ -1,0 +1,123 @@
+@charset "UTF-8";
+
+@charset "UTF-8";
+
+/* ============================
+   PALETA GLOBAL RPG
+============================ */
+:root {
+    --gold: #f1c40f;
+    --gold-soft: #ffdd66;
+    --dark-bg: #121212;
+    --panel-bg: #1f1f1f;
+    --border-gold: rgba(255, 215, 0, 0.35);
+    --border-soft: #333;
+    --text-light: #fff;
+    --text-muted: #aaa;
+}
+
+/* ============================
+   RESET
+============================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ============================
+   BODY INDEX
+============================ */
+body {
+    background: #2c3e50;
+    color: var(--text-light);
+    font-family: 'Roboto', sans-serif;
+
+    text-align: center;
+    padding-top: 60px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    min-height: 100vh;
+}
+
+/* ============================
+   TIPOGRAFÍA RPG
+============================ */
+h1, h2, h3, h4 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    letter-spacing: 1px;
+}
+
+h1 {
+    margin-bottom: 40px;
+    font-size: 2.2rem;
+}
+
+p {
+    margin-bottom: 40px;
+    font-size: 1.3rem;
+}
+
+/* ============================
+   ENLACES INDEX
+============================ */
+a {
+    font-size: 1.3rem;
+    border: 1px solid var(--gold);
+    padding: 12px 25px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 20px;
+
+    color: var(--gold);
+    text-decoration: none;
+    transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+a:hover {
+    background: var(--gold);
+    color: #000;
+    box-shadow: 0 0 12px var(--gold-soft);
+}
+
+/* ============================
+   BOTONES RPG (para index)
+============================ */
+.btn-rpg {
+    background: transparent;
+    border: 1px solid var(--gold);
+    padding: 10px 20px;
+    color: var(--gold);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+.btn-rpg:hover {
+    background: var(--gold);
+    color: #000;
+    box-shadow: 0 0 12px var(--gold-soft);
+}
+
+/* ============================
+   SEPARADORES Y ESPACIADOS
+============================ */
+div {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+/* ============================
+   ANIMACIÓN
+============================ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

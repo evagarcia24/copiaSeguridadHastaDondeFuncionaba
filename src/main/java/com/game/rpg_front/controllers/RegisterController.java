@@ -3,6 +3,7 @@ package com.game.rpg_front.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,6 +17,13 @@ public class RegisterController {
 
     @Autowired
     private UserService usuarioService;
+    
+    @GetMapping("/register")
+    public String showRegisterForm() {
+        return "register"; // nombre del template register.html
+    }
+
+
 
     @PostMapping("/register")
     public String registrar(@RequestParam String username,
@@ -39,7 +47,7 @@ public class RegisterController {
             return "redirect:/login?success";
         } catch (BusinessException e) {
             model.addAttribute("error", e.getMessage());
-            return "registro";
+            return "register";
         }
     }
 }

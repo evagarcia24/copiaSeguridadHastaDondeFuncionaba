@@ -1,0 +1,277 @@
+@charset "UTF-8";
+
+/* ============================
+   CONTENEDOR GENERAL
+============================ */
+body {
+    background: #1a1a1a;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+/* Fondo oscuro translúcido */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+
+/* Caja principal */
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.login-box {
+    background: rgba(20, 20, 20, 0.95);
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* ============================
+   HEADER
+============================ */
+.login-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-header i {
+    font-size: 50px;
+    color: #f1c40f;
+    text-shadow: 0 0 10px #f1c40f;
+    margin-bottom: 10px;
+}
+
+.login-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+/* ============================
+   FORMULARIO
+============================ */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Grupo de campos */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label alineado */
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #f1c40f;
+    margin-bottom: 6px;
+}
+
+.form-group label i {
+    font-size: 16px;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: #111;
+    color: #fff;
+    font-size: 15px;
+}
+
+/* Mostrar/ocultar contraseña */
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #f1c40f;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Error */
+.error {
+    background: rgba(255, 80, 80, 0.15);
+    border: 1px solid #ef4444;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* ============================
+   TÉRMINOS Y CONDICIONES
+============================ */
+.form-options {
+    margin-top: 10px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.modal-content {
+    background: #222;
+    padding: 25px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    border: 1px solid #f1c40f;
+    color: #fff;
+}
+
+.btn-accept {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background: #f1c40f;
+    color: #000;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-accept:hover {
+    background: #ffcc00;
+}
+
+/* ============================
+   BOTONES
+============================ */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background: #f1c40f;
+    border: none;
+    color: #000;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background: #ffcc00;
+}
+
+.btn-register {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 18px;
+    border: 1px solid #f1c40f;
+    border-radius: 6px;
+    color: #f1c40f;
+    transition: 0.3s;
+}
+
+.btn-register:hover {
+    background: #f1c40f;
+    color: #000;
+}
+
+/* ============================
+   SEPARADOR
+============================ */
+.separator {
+    text-align: center;
+    margin: 25px 0;
+    position: relative;
+}
+
+.separator span {
+    background: #1a1a1a;
+    padding: 0 10px;
+    color: #aaa;
+}
+
+.separator::before,
+.separator::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #444;
+}
+
+.separator::before {
+    left: 0;
+}
+
+.separator::after {
+    right: 0;
+}
+
+/* ============================
+   FOOTER
+============================ */
+.login-footer {
+    text-align: center;
+    margin-top: 25px;
+    opacity: 0.6;
+    font-size: 12px;
+}
+
+/* ============================
+   ANIMACIÓN
+============================ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
