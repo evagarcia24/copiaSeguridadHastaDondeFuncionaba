@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Roster</title>
+    <link rel="stylesheet" th:href="@{/darkmode.css}">
+</head>
+
+<body>
+    <div th:fragment="characterRoster" class="container">
+        <h1>Character Roster</h1>
+
+        <h2>User Races</h2>
+        <div class="table-container table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Race</th>
+                        <th>Description</th>
+                        <th>Attack</th>
+                        <th>Magic</th>
+                        <th>Defense</th>
+                        <th>Speed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${userRaces == null or userRaces.empty}">
+                        <td colspan="7" class="empty-state">
+                            No user races found for the current user.
+                        </td>
+                    </tr>
+
+                    <th:block th:each="r : ${userRaces}">
+                        <tr th:attr="id='user-race-view-' + ${r.raceId},data-race-id=${r.raceId}" class="row-selectable"
+                            onclick="openUserRaceEdit(this.getAttribute('data-race-id'))">
+                            <td></td>
+                            <td th:text="${r.race}">Race</td>
+                            <td th:text="${r.description}">Description</td>
+                            <td th:text="${r.attack}">1</td>
+                            <td th:text="${r.magic}">1</td>
+                            <td th:text="${r.defense}">1</td>
+                            <td th:text="${r.speed}">1</td>
+                        </tr>
+
+                        <tr th:attr="id='user-race-edit-' + ${r.raceId}" style="display:none;">
+                            <td colspan="7">
+                                <div class="filter-bar">
+                                    <input type="text" placeholder="Character name" th:attr="id='user-race-name-input-' + ${r.raceId}">
+
+                                    <button type="button" class="btn btn-view" th:attr="data-race-id=${r.raceId}"
+                                        onclick="createCharacterUserHero(this.getAttribute('data-race-id'))">
+                                        <i data-lucide="check"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-view" th:attr="data-race-id=${r.raceId}"
+                                        onclick="cancelUserRaceEdit(this.getAttribute('data-race-id'))">
+                                        <i data-lucide="x"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>User Heroes</h2>
+        <div class="table-container table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Race</th>
+                        <th>Description</th>
+                        <th>Attack</th>
+                        <th>Magic</th>
+                        <th>Defense</th>
+                        <th>Speed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${characterUserHeroes == null or characterUserHeroes.empty}">
+                        <td colspan="7" class="empty-state">
+                            No character user heroes found for the current user.
+                        </td>
+                    </tr>
+
+                    <tr th:each="h : ${characterUserHeroes}" class="row-selectable"
+                        th:attr="data-hero-id=${h.characterUserHeroId}" onclick="toggleUserHeroSelection(this)">
+                        <td th:text="${h.name}">Name</td>
+                        <td th:text="${h.race}">Race</td>
+                        <td th:text="${h.description}">Description</td>
+                        <td th:text="${h.attack}">1</td>
+                        <td th:text="${h.magic}">1</td>
+                        <td th:text="${h.defense}">1</td>
+                        <td th:text="${h.speed}">1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>System Heroes</h2>
+        <div class="table-container table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Race</th>
+                        <th>Description</th>
+                        <th>Attack</th>
+                        <th>Magic</th>
+                        <th>Defense</th>
+                        <th>Speed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${characterSystemHeroes == null or characterSystemHeroes.empty}">
+                        <td colspan="7" class="empty-state">
+                            No character system heroes found.
+                        </td>
+                    </tr>
+
+                    <tr th:each="h : ${characterSystemHeroes}" class="row-selectable"
+                        th:attr="data-hero-id=${h.characterSystemHeroId}" onclick="toggleSystemHeroSelection(this)">
+                        <td th:text="${h.name}">Name</td>
+                        <td th:text="${h.race}">Race</td>
+                        <td th:text="${h.description}">Description</td>
+                        <td th:text="${h.attack}">1</td>
+                        <td th:text="${h.magic}">1</td>
+                        <td th:text="${h.defense}">1</td>
+                        <td th:text="${h.speed}">1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Selected</h2>
+        <div class="table-container">
+            <div id="selected-summary" class="selected-summary">
+                <div>
+                    Total selected:
+                    <span id="selected-total" class="selected-total text-warn">0</span>
+                </div>
+                <ul id="selected-list" class="selected-list"></ul>
+            </div>
+
+            <div class="filter-bar">
+                <button id="confirm-roster-btn" class="btn btn-view" type="button" onclick="confirmRoster()" disabled>
+                    Confirm
+                </button>
+
+                <button class="btn btn-delete" type="button" onclick="resetSelection()">
+                    Cancel
+                </button>
+            </div>
+
+            <pre id="roster-result"></pre>
+        </div>
+
+        <script src="https://unpkg.com/lucide@latest"></script>
+
+        <script>
+            var selectedSystemHeroIds = [];
+            var selectedUserHeroIds = [];
+
+            lucide.createIcons();
+            updateSelectionSummary();
+
+            function openUserRaceEdit(raceId) {
+                closeAllUserRaceEdits();
+
+                var viewRow = document.getElementById('user-race-view-' + raceId);
+                var editRow = document.getElementById('user-race-edit-' + raceId);
+
+                if (viewRow) {
+                    viewRow.style.display = 'none';
+                }
+
+                if (editRow) {
+                    editRow.style.display = '';
+                }
+
+                var input = document.getElementById('user-race-name-input-' + raceId);
+                if (input) {
+                    input.focus();
+                }
+            }
+
+            function closeAllUserRaceEdits() {
+                var viewRows = document.querySelectorAll('tr[id^="user-race-view-"]');
+                var editRows = document.querySelectorAll('tr[id^="user-race-edit-"]');
+
+                var i;
+                for (i = 0; i < viewRows.length; i++) {
+                    viewRows[i].style.display = '';
+                }
+
+                for (i = 0; i < editRows.length; i++) {
+                    var row = editRows[i];
+                    var input = row.querySelector('input');
+                    if (input) {
+                        input.value = '';
+                    }
+                    row.style.display = 'none';
+                }
+            }
+
+            function cancelUserRaceEdit(raceId) {
+                var input = document.getElementById('user-race-name-input-' + raceId);
+                var viewRow = document.getElementById('user-race-view-' + raceId);
+                var editRow = document.getElementById('user-race-edit-' + raceId);
+
+                if (input) {
+                    input.value = '';
+                }
+
+                if (editRow) {
+                    editRow.style.display = 'none';
+                }
+
+                if (viewRow) {
+                    viewRow.style.display = '';
+                }
+            }
+
+            function createCharacterUserHero(raceId) {
+                var input = document.getElementById('user-race-name-input-' + raceId);
+                var name = input ? input.value.trim() : '';
+
+                if (!name) {
+                    alert('Character name is required.');
+                    if (input) {
+                        input.focus();
+                    }
+                    return;
+                }
+
+                var request = new XMLHttpRequest();
+                request.open('POST', '/api/character-user-heroes', true);
+                request.setRequestHeader('Content-Type', 'application/json');
+
+                request.onreadystatechange = function () {
+                    if (request.readyState === 4) {
+                        if (request.status === 200 || request.status === 201) {
+                            window.location.reload();
+                        } else {
+                            alert(request.responseText || 'Error creating character user hero.');
+                        }
+                    }
+                };
+
+                request.send(JSON.stringify({
+                    raceId: raceId,
+                    name: name
+                }));
+            }
+
+            function toggleUserHeroSelection(row) {
+                toggleSelection(row, selectedUserHeroIds);
+            }
+
+            function toggleSystemHeroSelection(row) {
+                toggleSelection(row, selectedSystemHeroIds);
+            }
+
+            function toggleSelection(row, selectedIds) {
+                var heroId = row.getAttribute('data-hero-id');
+
+                if (!heroId) {
+                    return;
+                }
+
+                var existingIndex = selectedIds.indexOf(heroId);
+
+                if (existingIndex >= 0) {
+                    selectedIds.splice(existingIndex, 1);
+                    row.classList.remove('row-selected');
+                    updateSelectionSummary();
+                    return;
+                }
+
+                if (selectedSystemHeroIds.length + selectedUserHeroIds.length >= 5) {
+                    alert('You can select up to 5 characters.');
+                    return;
+                }
+
+                selectedIds.push(heroId);
+                row.classList.add('row-selected');
+                updateSelectionSummary();
+            }
+
+            function resetSelection() {
+                selectedSystemHeroIds = [];
+                selectedUserHeroIds = [];
+
+                var selectedRows = document.querySelectorAll('.row-selected');
+                var i;
+                for (i = 0; i < selectedRows.length; i++) {
+                    selectedRows[i].classList.remove('row-selected');
+                }
+
+                updateSelectionSummary();
+                document.getElementById('roster-result').textContent = '';
+            }
+
+            function updateSelectionSummary() {
+                var totalSelected = selectedSystemHeroIds.length + selectedUserHeroIds.length;
+                var totalSpan = document.getElementById('selected-total');
+                var list = document.getElementById('selected-list');
+                var confirmButton = document.getElementById('confirm-roster-btn');
+
+                if (totalSpan) {
+                    totalSpan.textContent = String(totalSelected);
+
+                    totalSpan.classList.remove('text-warn');
+                    totalSpan.classList.remove('text-ok');
+
+                    if (totalSelected >= 2 && totalSelected <= 5) {
+                        totalSpan.classList.add('text-ok');
+                    } else {
+                        totalSpan.classList.add('text-warn');
+                    }
+                }
+
+                if (list) {
+                    list.innerHTML = '';
+
+                    var allSelectedIds = selectedSystemHeroIds.concat(selectedUserHeroIds);
+
+                    for (var i = 0; i < allSelectedIds.length; i++) {
+                        var id = allSelectedIds[i];
+                        var row = document.querySelector('tr[data-hero-id="' + id + '"]');
+
+                        if (!row) {
+                            continue;
+                        }
+
+                        var cells = row.querySelectorAll('td');
+
+                        if (cells.length < 3) {
+                            continue;
+                        }
+
+                        var name = (cells[0].textContent || '').trim();
+                        var race = (cells[1].textContent || '').trim();
+                        var description = (cells[2].textContent || '').trim();
+
+                        var li = document.createElement('li');
+                        li.textContent = name + ' | ' + race + ' | ' + description;
+                        list.appendChild(li);
+                    }
+                }
+
+                if (confirmButton) {
+                    confirmButton.disabled = !(totalSelected >= 2 && totalSelected <= 5);
+                }
+            }
+
+            function confirmRoster() {
+                var totalSelected = selectedSystemHeroIds.length + selectedUserHeroIds.length;
+
+                if (totalSelected < 2 || totalSelected > 5) {
+                    return;
+                }
+
+                var request = new XMLHttpRequest();
+                request.open('POST', '/api/character-rosters', true);
+                request.setRequestHeader('Content-Type', 'application/json');
+
+                request.onreadystatechange = function () {
+                    if (request.readyState === 4) {
+                        if (request.status === 200 || request.status === 201) {
+                            var response = {};
+                            try {
+                                response = JSON.parse(request.responseText);
+                            } catch (e) {
+                                response = {};
+                            }
+
+                            var rosterId = response.characterRosterId ? response.characterRosterId : '';
+                            document.getElementById('roster-result').textContent = 'Roster created: ' + rosterId;
+                        } else {
+                            alert(request.responseText || 'Error creating roster.');
+                        }
+                    }
+                };
+
+                request.send(JSON.stringify({
+                    characterSystemHeroIds: selectedSystemHeroIds,
+                    characterUserHeroIds: selectedUserHeroIds
+                }));
+            }
+        </script>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Equipo Confirmado</title>
+    <style>
+        body { 
+            background: #1a1a2e; 
+            color: white; 
+            font-family: sans-serif; 
+            text-align: center; 
+            padding: 100px; 
+        }
+        .check { color: #00d4ff; font-size: 5rem; display: block; margin-bottom: 20px; }
+        .id-box { 
+            background: #16213e; 
+            padding: 20px; 
+            border: 1px dashed #e94560; 
+            display: inline-block; 
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 1.2rem;
+        }
+        .btn-volver {
+            margin-top: 30px;
+            display: inline-block;
+            color: #e94560;
+            text-decoration: none;
+            border: 1px solid #e94560;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <span class="check">✔</span>
+    <h1>¡EQUIPO REGISTRADO CON ÉXITO!</h1>
+    <p>El servidor ha generado el ID único para tu Roster:</p>
+    
+    <div class="id-box" th:text="${rosterId}">
+        0000-0000-0000-0000
+    </div>
+
+    <br>
+    <a href="/roster" class="btn-volver">Crear otro equipo</a>
+</body>
+</html>
