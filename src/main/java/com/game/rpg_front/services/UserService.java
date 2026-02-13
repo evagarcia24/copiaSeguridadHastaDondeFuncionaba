@@ -11,11 +11,11 @@ import java.util.List;
 public class UserService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String URL = "http://localhost:8084/api/users";
 
-    public List<User> getAllUsers() {
-        User[] users = restTemplate.getForObject(URL, User[].class);
+    public List<?> getAllUsers() {
+        String url = "http://localhost:8084/api/users";
+        User[] users = restTemplate.getForObject(url, User[].class);
         return Arrays.asList(users);
     }
-}
 
+}

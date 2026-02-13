@@ -1,58 +1,62 @@
 package com.game.rpg_front.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
-    private String userId;
-    private String role;
-    private String name;
-    private String email;
-    private boolean banned;
-    private String pictureId;
 
-    public String getUserId() {
-        return userId;
-    }
+	private String userId;
+	private String role;
+	private String name;
+	private String email;
+	private boolean banned;
+	private String pictureId;
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+	public String getUserId() {
+		return userId;
+	}
 
-    public String getRole() {
-        return role;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+	public String getRole() {
+		return role;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setRole(String role) {
+		this.role = role;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public boolean isBanned() {
-        return banned;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setBanned(boolean banned) {
-        this.banned = banned;
-    }
+	public boolean isBanned() {
+		return banned;
+	}
 
-    public String getPictureId() {
-        return pictureId;
-    }
+	public void setBanned(boolean banned) {
+		this.banned = banned;
+	}
 
-    public void setPictureId(String pictureId) {
-        this.pictureId = pictureId;
-    }
+	public String getPictureId() {
+		return pictureId;
+	}
+
+	public void setPictureId(String pictureId) {
+		this.pictureId = pictureId;
+	}
 }
