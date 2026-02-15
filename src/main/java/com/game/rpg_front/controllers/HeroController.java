@@ -40,7 +40,7 @@ public class HeroController {
 
         try {
             // Enviamos los datos al Back
-            Map respuesta = restTemplate.postForObject(url, request, Map.class);
+            Map<?, ?> respuesta = restTemplate.postForObject(url, request, Map.class);
             
             // Guardamos el ID que nos devuelve el Back para mostrarlo
             model.addAttribute("rosterId", respuesta.get("characterRosterId"));

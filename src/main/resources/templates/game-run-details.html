@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Run Detail</title>
+    <link rel="stylesheet" th:href="@{/darkmode.css}">
+</head>
+
+<body>
+    <div th:fragment="gameRunDetail" class="container">
+        <h1>Game Run Detail</h1>
+
+        <div class="table-container">
+            <p><strong>runId:</strong> <span id="runIdText" th:text="${run.runId}">runId</span></p>
+            <p><strong>status:</strong> <span th:text="${run.status}">status</span></p>
+            <p>
+                <strong>cursor:</strong>
+                chapter=<span th:text="${run.currentChapterNumber}">1</span>,
+                phase=<span id="currentPhaseTypeText" th:text="${run.currentPhaseType}">ENCOUNTER</span>,
+                encounter=<span th:text="${run.currentEncounterIndex}">1</span>
+            </p>
+            <p><strong>gameDefinitionId:</strong> <span th:text="${run.gameDefinitionId}">gameDefinitionId</span></p>
+            <p><strong>gameDefinitionName:</strong> <span id="gameDefinitionNameText" th:text="${run.gameDefinitionName}">gameDefinitionName</span></p>
+            <p><strong>createdAt:</strong> <span th:text="${run.createdAt}">createdAt</span></p>
+            <p><strong>updatedAt:</strong> <span th:text="${run.updatedAt}">updatedAt</span></p>
+            <p><strong>checkpoints:</strong> <span th:text="${run.existingCheckpointTypes}">[]</span></p>
+        </div>
+
+        <div class="table-container" style="margin-top: 1rem;">
+            <h2>Actions</h2>
+
+            <div id="encounter-box" class="table-container">
+                <div id="encounter-name"></div>
+                <div id="encounter-description"></div>
+                <div class="filter-bar">
+                    <button id="encounter-interact-btn" class="btn btn-view" type="button"></button>
+                    <button id="encounter-avoid-btn" class="btn btn-delete" type="button"></button>
+                </div>
+                <pre id="encounter-roll"></pre>
+                <pre id="encounter-outcome-content"></pre>
+            </div>
+
+            <div id="clash-resolve-box" class="table-container">
+                <div class="filter-bar">
+                    <button id="roll-clash-initiative-btn" class="btn btn-view" type="button" onclick="rollClashInitiative()">
+                        <i data-lucide="dice-5"></i> Roll Initiative
+                    </button>
+                    <button id="resolve-clash-round-btn" class="btn btn-delete" type="button" onclick="resolveClashRound()">
+                        <i data-lucide="swords"></i> Roll Clash
+                    </button>
+                </div>
+                <pre id="clash-initiative-output"></pre>
+                <pre id="clash-round-output"></pre>
+            </div>
+
+            <div id="use-potion-box" class="table-container" style="margin-top: 1rem;">
+                <h3>Use Potion</h3>
+                <div th:if="${run.heroes == null or run.heroes.empty}" class="empty-state">No heroes.</div>
+                <div th:each="hero : ${run.heroes}" style="margin-bottom: 0.75rem; padding: 0.5rem; border: 1px solid #444;">
+                    <div>
+                        heroSlot=<span th:text="${hero.heroSlot}">1</span>,
+                        health=<span th:text="${hero.health}">100</span>,
+                        lifes=<span th:text="${hero.lifes}">3</span>,
+                        immunityRoundsLeft=<span th:text="${hero.immunityRoundsLeft}">0</span>,
+                        powerRoundsLeft=<span th:text="${hero.powerRoundsLeft}">0</span>
+                    </div>
+                    <div>
+                        potions: <span th:text="${hero.potions}">[]</span>
+                    </div>
+                    <div class="filter-bar" style="margin-top: 0.5rem;">
+                        <select th:id="'use-potion-select-' + ${hero.heroSlot}"
+                            th:disabled="${hero.potions == null or hero.potions.empty}">
+                            <option value="">Select potionId</option>
+                            <option th:each="potionId : ${hero.potions}" th:value="${potionId}" th:text="${potionId}"></option>
+                        </select>
+                        <button class="btn btn-view" type="button"
+                            th:attr="onclick='usePotionForHero(' + ${hero.heroSlot} + ')'"
+                            th:disabled="${hero.potions == null or hero.potions.empty}">
+                            Use
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <button class="btn btn-view" type="button" onclick="advanceAfterClash()">
+                    Advance after clash
+                </button>
+            </div>
+
+            <pre id="actionOutput">Ready.</pre>
+        </div>
+
+        <div class="table-container table-scroll" style="margin-top: 1rem;">
+            <h2>Heroes</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Slot</th>
+                        <th>Lifes</th>
+                        <th>Health</th>
+                        <th>Attack</th>
+                        <th>Magic</th>
+                        <th>Defense</th>
+                        <th>Speed</th>
+                        <th>SystemHeroId</th>
+                        <th>UserHeroId</th>
+                        <th>Immunity Rounds</th>
+                        <th>Power Rounds</th>
+                        <th>Weapons</th>
+                        <th>Shields</th>
+                        <th>Potions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${run.heroes == null or run.heroes.empty}">
+                        <td colspan="14" class="empty-state">No heroes.</td>
+                    </tr>
+                    <tr th:each="hero : ${run.heroes}"
+                        th:attr="data-hero-slot=${hero.heroSlot},data-lifes=${hero.lifes},data-health=${hero.health}">
+                        <td th:text="${hero.heroSlot}">1</td>
+                        <td th:text="${hero.lifes}">0</td>
+                        <td th:text="${hero.health}">0</td>
+                        <td th:text="${hero.attack}">0</td>
+                        <td th:text="${hero.magic}">0</td>
+                        <td th:text="${hero.defense}">0</td>
+                        <td th:text="${hero.speed}">0</td>
+                        <td th:text="${hero.characterSystemHeroId}">null</td>
+                        <td th:text="${hero.characterUserHeroId}">null</td>
+                        <td th:text="${hero.immunityRoundsLeft}">0</td>
+                        <td th:text="${hero.powerRoundsLeft}">0</td>
+                        <td th:text="${hero.weapons}">[]</td>
+                        <td th:text="${hero.shields}">[]</td>
+                        <td th:text="${hero.potions}">[]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container table-scroll" style="margin-top: 1rem;">
+            <h2>Villains</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Lifes</th>
+                        <th>Health</th>
+                        <th>Attack</th>
+                        <th>Magic</th>
+                        <th>Defense</th>
+                        <th>Speed</th>
+                        <th>VillainId</th>
+                        <th>Weapons</th>
+                        <th>Shields</th>
+                        <th>Potions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${run.villains == null or run.villains.empty}">
+                        <td colspan="11" class="empty-state">No villains.</td>
+                    </tr>
+                    <tr th:each="villain : ${run.villains}">
+                        <td th:text="${villain.villainPosition}">1</td>
+                        <td th:text="${villain.lifes}">0</td>
+                        <td th:text="${villain.health}">0</td>
+                        <td th:text="${villain.attack}">0</td>
+                        <td th:text="${villain.magic}">0</td>
+                        <td th:text="${villain.defense}">0</td>
+                        <td th:text="${villain.speed}">0</td>
+                        <td th:text="${villain.villainId}">villainId</td>
+                        <td th:text="${villain.weapons}">[]</td>
+                        <td th:text="${villain.shields}">[]</td>
+                        <td th:text="${villain.potions}">[]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container table-scroll" style="margin-top: 1rem;">
+            <h2>Dispensers</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Universe</th>
+                        <th>Remaining size</th>
+                        <th>Remaining ids</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${run.dispensers == null or run.dispensers.empty}">
+                        <td colspan="4" class="empty-state">No dispensers.</td>
+                    </tr>
+                    <tr th:each="dispenser : ${run.dispensers}">
+                        <td th:text="${dispenser.dispenserType}">WEAPON</td>
+                        <td th:text="${dispenser.dispenserUniverse}">MAIN</td>
+                        <td th:text="${dispenser.remainingIds == null ? 0 : #lists.size(dispenser.remainingIds)}">0</td>
+                        <td th:text="${dispenser.remainingIds}">[]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container table-scroll" style="margin-top: 1rem;">
+            <h2>Encounter Resolutions</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Story Position</th>
+                        <th>Resolution Type</th>
+                        <th>Resolved At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${run.encounterResolutions == null or run.encounterResolutions.empty}">
+                        <td colspan="3" class="empty-state">No encounter resolutions.</td>
+                    </tr>
+                    <tr th:each="resolution : ${run.encounterResolutions}">
+                        <td th:text="${resolution.storyEncounterPosition}">1</td>
+                        <td th:text="${resolution.resolutionType}">SUCCESS</td>
+                        <td th:text="${resolution.resolvedAt}">resolvedAt</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container table-scroll" style="margin-top: 1rem;">
+            <h2>Clash Rounds</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ClashRoundId</th>
+                        <th>Villain Position</th>
+                        <th>Round Index</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${run.clashRounds == null or run.clashRounds.empty}">
+                        <td colspan="4" class="empty-state">No clash rounds.</td>
+                    </tr>
+                    <tr th:each="round : ${run.clashRounds}">
+                        <td th:text="${round.clashRoundId}">clashRoundId</td>
+                        <td th:text="${round.villainPosition}">1</td>
+                        <td th:text="${round.roundIndex}">1</td>
+                        <td th:text="${round.createdAt}">createdAt</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        var currentEncounter = null;
+        var currentPendingRoundId = '';
+
+        function getRunId() {
+            var textElement = document.getElementById('runIdText');
+            if (!textElement || !textElement.textContent) {
+                return '';
+            }
+            return textElement.textContent.trim();
+        }
+
+        function getCurrentPhaseType() {
+            var phaseElement = document.getElementById('currentPhaseTypeText');
+            if (!phaseElement || !phaseElement.textContent) {
+                return '';
+            }
+            return phaseElement.textContent.trim();
+        }
+
+        function setActionOutput(text) {
+            var output = document.getElementById('actionOutput');
+            if (output) {
+                output.textContent = text;
+            }
+        }
+
+        function setEncounterText(elementId, text) {
+            var element = document.getElementById(elementId);
+            if (!element) {
+                return;
+            }
+            element.textContent = text ? text : '';
+        }
+
+        function getJson(url, onSuccess, onError) {
+            var request = new XMLHttpRequest();
+            request.open('GET', url, true);
+
+            request.onreadystatechange = function () {
+                if (request.readyState !== 4) {
+                    return;
+                }
+
+                if (request.status >= 200 && request.status < 300) {
+                    var body = null;
+                    if (request.responseText && request.responseText.trim().length > 0) {
+                        try {
+                            body = JSON.parse(request.responseText);
+                        } catch (e) {
+                            body = null;
+                        }
+                    }
+                    onSuccess(body);
+                    return;
+                }
+
+                var errorMessage = request.responseText ? request.responseText : ('HTTP ' + request.status);
+                onError(errorMessage);
+            };
+
+            request.send(null);
+        }
+
+        function postJson(url, payload, onSuccess, onError) {
+            var request = new XMLHttpRequest();
+            request.open('POST', url, true);
+            request.setRequestHeader('Content-Type', 'application/json');
+
+            request.onreadystatechange = function () {
+                if (request.readyState !== 4) {
+                    return;
+                }
+
+                if (request.status >= 200 && request.status < 300) {
+                    var body = null;
+
+                    if (request.responseText && request.responseText.trim().length > 0) {
+                        try {
+                            body = JSON.parse(request.responseText);
+                        } catch (e) {
+                            body = null;
+                        }
+                    }
+
+                    onSuccess(body);
+                    return;
+                }
+
+                var errorMessage = request.responseText ? request.responseText : ('HTTP ' + request.status);
+                onError(errorMessage);
+            };
+
+            request.send(JSON.stringify(payload));
+        }
+
+        function postWithoutBody(url, onSuccess, onError) {
+            var request = new XMLHttpRequest();
+            request.open('POST', url, true);
+
+            request.onreadystatechange = function () {
+                if (request.readyState !== 4) {
+                    return;
+                }
+
+                if (request.status >= 200 && request.status < 300) {
+                    onSuccess();
+                    return;
+                }
+
+                var errorMessage = request.responseText ? request.responseText : ('HTTP ' + request.status);
+                onError(errorMessage);
+            };
+
+            request.send(null);
+        }
+
+        function loadEncounterBox() {
+            var runId = getRunId();
+            var phaseType = getCurrentPhaseType();
+            var encounterBox = document.getElementById('encounter-box');
+
+            if (!encounterBox) {
+                return;
+            }
+
+            if (!runId || phaseType !== 'ENCOUNTER') {
+                encounterBox.style.display = 'none';
+                return;
+            }
+
+            encounterBox.style.display = 'block';
+            setEncounterText('encounter-name', 'Loading encounter...');
+            setEncounterText('encounter-description', '');
+            setEncounterText('encounter-roll', '');
+            setEncounterText('encounter-outcome-content', '');
+
+            getJson(
+                '/api/game-runs/' + encodeURIComponent(runId) + '/current-encounter',
+                function (encounter) {
+                    currentEncounter = encounter;
+
+                    var interactButton = document.getElementById('encounter-interact-btn');
+                    var avoidButton = document.getElementById('encounter-avoid-btn');
+
+                    setEncounterText('encounter-name', encounter && encounter.name ? encounter.name : '');
+                    setEncounterText('encounter-description', encounter && encounter.description ? encounter.description : '');
+
+                    if (interactButton) {
+                        interactButton.textContent = encounter && encounter.optionInteractLabel ? encounter.optionInteractLabel : 'Interact';
+                        interactButton.onclick = function () {
+                            handleEncounterInteract();
+                        };
+                    }
+
+                    if (avoidButton) {
+                        avoidButton.textContent = encounter && encounter.optionAvoidLabel ? encounter.optionAvoidLabel : 'Avoid';
+                        avoidButton.onclick = function () {
+                            handleEncounterAvoid();
+                        };
+                    }
+                },
+                function (errorMessage) {
+                    setEncounterText('encounter-name', 'Encounter unavailable');
+                    setEncounterText('encounter-description', errorMessage);
+                    setActionOutput(errorMessage);
+                }
+            );
+        }
+
+        function loadClashResolveBox() {
+            var runId = getRunId();
+            var phaseType = getCurrentPhaseType();
+            var clashBox = document.getElementById('clash-resolve-box');
+            var initiativeOutput = document.getElementById('clash-initiative-output');
+            var clashRoundOutput = document.getElementById('clash-round-output');
+            var initiativeButton = document.getElementById('roll-clash-initiative-btn');
+            var resolveButton = document.getElementById('resolve-clash-round-btn');
+
+            if (!clashBox || !initiativeOutput || !clashRoundOutput || !initiativeButton || !resolveButton) {
+                return;
+            }
+
+            if (!runId || (phaseType !== 'CHAPTER_CLASH' && phaseType !== 'FINAL_CLASH')) {
+                clashBox.style.display = 'none';
+                return;
+            }
+
+            clashBox.style.display = 'block';
+            initiativeOutput.textContent = '';
+            clashRoundOutput.textContent = '';
+            currentPendingRoundId = '';
+            initiativeButton.disabled = false;
+            resolveButton.disabled = true;
+        }
+
+        function loadUsePotionBox() {
+            var runId = getRunId();
+            var phaseType = getCurrentPhaseType();
+            var box = document.getElementById('use-potion-box');
+
+            if (!box) {
+                return;
+            }
+
+            if (!runId || (phaseType !== 'CHAPTER_CLASH' && phaseType !== 'FINAL_CLASH')) {
+                box.style.display = 'none';
+                return;
+            }
+
+            box.style.display = 'block';
+        }
+
+        function renderInitiativeResult(payload) {
+            var output = document.getElementById('clash-initiative-output');
+            if (!output) {
+                return;
+            }
+
+            if (!payload) {
+                output.textContent = 'No initiative payload.';
+                return;
+            }
+
+            var lines = [];
+            lines.push('pendingRoundId: ' + (payload.pendingRoundId ? payload.pendingRoundId : ''));
+
+            if (payload.villain) {
+                lines.push('villain -> roll=' + payload.villain.roll + ', speed=' + payload.villain.speed + ', score=' + payload.villain.score);
+            }
+
+            lines.push('heroes:');
+            if (payload.heroes && payload.heroes.length > 0) {
+                for (var i = 0; i < payload.heroes.length; i++) {
+                    var hero = payload.heroes[i];
+                    lines.push('  slot=' + hero.heroSlot + ', characterId=' + hero.characterId + ', roll=' + hero.roll + ', speed=' + hero.speed + ', score=' + hero.score);
+                }
+            } else {
+                lines.push('  (none)');
+            }
+
+            lines.push('orderedHeroSlots: ' + (payload.orderedHeroSlots ? payload.orderedHeroSlots.join(', ') : ''));
+            output.textContent = lines.join('\n');
+        }
+
+        function renderClashRoundResult(payload) {
+            var output = document.getElementById('clash-round-output');
+            if (!output) {
+                return;
+            }
+
+            if (!payload) {
+                output.textContent = 'No clash payload.';
+                return;
+            }
+
+            var lines = [];
+            lines.push('pendingRoundId: ' + (payload.pendingRoundId ? payload.pendingRoundId : ''));
+            lines.push('villainPosition: ' + payload.villainPosition + ', roundIndex: ' + payload.roundIndex);
+
+            if (payload.initiative && payload.initiative.villain) {
+                lines.push('initiative villain -> roll=' + payload.initiative.villain.roll + ', speed=' + payload.initiative.villain.speed + ', score=' + payload.initiative.villain.score);
+            }
+            if (payload.initiative && payload.initiative.orderedHeroSlots) {
+                lines.push('initiative orderedHeroSlots: ' + payload.initiative.orderedHeroSlots.join(', '));
+            }
+
+            lines.push('exchanges:');
+            if (payload.exchanges && payload.exchanges.length > 0) {
+                for (var i = 0; i < payload.exchanges.length; i++) {
+                    var exchange = payload.exchanges[i];
+                    lines.push('  exchange #' + (i + 1));
+                    lines.push('    heroSlot=' + exchange.heroSlot + ', characterId=' + exchange.characterId);
+                    lines.push('    villainRoll=' + exchange.villainRoll + ', heroRoll=' + exchange.heroRoll);
+                    lines.push('    villainScore=' + exchange.villainScore + ', heroScore=' + exchange.heroScore);
+                    lines.push('    attackerSide=' + exchange.attackerSide + ', defenderSide=' + exchange.defenderSide);
+                    lines.push('    attackerPower=' + exchange.attackerPower + ', defenderPower=' + exchange.defenderPower);
+                    lines.push('    attackerProduct=' + exchange.attackerProduct + ', defenderProduct=' + exchange.defenderProduct);
+                    lines.push('    damageRaw=' + exchange.damageRaw + ', damageFinal=' + exchange.damageFinal);
+                    lines.push('    heroBefore=' + JSON.stringify(exchange.heroBefore) + ', heroAfter=' + JSON.stringify(exchange.heroAfter));
+                    lines.push('    villainBefore=' + JSON.stringify(exchange.villainBefore) + ', villainAfter=' + JSON.stringify(exchange.villainAfter));
+                }
+            } else {
+                lines.push('  (none)');
+            }
+
+            output.textContent = lines.join('\n');
+        }
+
+        function rollClashInitiative() {
+            var runId = getRunId();
+            var resolveButton = document.getElementById('resolve-clash-round-btn');
+
+            if (!runId) {
+                setActionOutput('runId is required.');
+                return;
+            }
+
+            postJson(
+                '/api/game-runs/' + encodeURIComponent(runId) + '/roll-clash-initiative',
+                {},
+                function (payload) {
+                    currentPendingRoundId = payload && payload.pendingRoundId ? payload.pendingRoundId : '';
+                    renderInitiativeResult(payload);
+
+                    if (resolveButton) {
+                        resolveButton.disabled = false;
+                    }
+
+                    setActionOutput('Initiative rolled.');
+                },
+                function (errorMessage) {
+                    setActionOutput(errorMessage);
+                }
+            );
+        }
+
+        function handleEncounterInteract() {
+            var runId = getRunId();
+            if (!runId) {
+                setActionOutput('runId is required.');
+                return;
+            }
+
+            if (!currentEncounter) {
+                setActionOutput('Current encounter is not loaded.');
+                return;
+            }
+
+            postJson(
+                '/api/game-runs/' + encodeURIComponent(runId) + '/resolve-encounter-interact',
+                {},
+                function (payload) {
+                    var roll = '';
+                    var resolutionType = '';
+                    var outcomeContent = '';
+
+                    if (payload && payload.roll !== null && payload.roll !== undefined) {
+                        roll = payload.roll;
+                    }
+                    if (payload && payload.resolutionType) {
+                        resolutionType = payload.resolutionType;
+                    }
+                    if (payload && payload.outcomeContent) {
+                        outcomeContent = payload.outcomeContent;
+                    }
+
+                    setEncounterText('encounter-roll', 'Roll: ' + roll + ' -> ' + resolutionType);
+                    setEncounterText('encounter-outcome-content', outcomeContent);
+
+                    setTimeout(function () {
+                        reloadRun(runId);
+                    }, 800);
+                },
+                function (errorMessage) {
+                    setActionOutput(errorMessage);
+                    setEncounterText('encounter-outcome-content', errorMessage);
+                }
+            );
+        }
+
+        function handleEncounterAvoid() {
+            var runId = getRunId();
+            if (!runId) {
+                setActionOutput('runId is required.');
+                return;
+            }
+
+            postJson(
+                '/api/game-runs/' + encodeURIComponent(runId) + '/resolve-encounter-avoid',
+                {},
+                function (payload) {
+                    var resolutionType = '';
+                    var outcomeContent = '';
+
+                    if (payload && payload.resolutionType) {
+                        resolutionType = payload.resolutionType;
+                    }
+                    if (payload && payload.outcomeContent) {
+                        outcomeContent = payload.outcomeContent;
+                    }
+
+                    if (payload && payload.rolled === false) {
+                        setEncounterText('encounter-roll', 'Roll: none -> ' + resolutionType);
+                    } else {
+                        setEncounterText('encounter-roll', 'Roll: ? -> ' + resolutionType);
+                    }
+                    setEncounterText('encounter-outcome-content', outcomeContent);
+
+                    setTimeout(function () {
+                        reloadRun(runId);
+                    }, 800);
+                },
+                function (errorMessage) {
+                    setActionOutput(errorMessage);
+                    setEncounterText('encounter-outcome-content', errorMessage);
+                }
+            );
+        }
+
+        function reloadRun(runId) {
+            window.location.href = '/game-runs/' + encodeURIComponent(runId);
+        }
+
+        function resolveClashRound() {
+            var runId = getRunId();
+            var resolveButton = document.getElementById('resolve-clash-round-btn');
+
+            if (!runId) {
+                setActionOutput('runId is required.');
+                return;
+            }
+
+            postJson(
+                '/api/game-runs/' + encodeURIComponent(runId) + '/resolve-clash-round',
+                {},
+                function (payload) {
+                    renderClashRoundResult(payload);
+                    currentPendingRoundId = '';
+
+                    if (resolveButton) {
+                        resolveButton.disabled = true;
+                    }
+
+                    setActionOutput('Clash round resolved.');
+                    setTimeout(function () {
+                        reloadRun(runId);
+                    }, 800);
+                },
+                function (errorMessage) {
+                    setActionOutput(errorMessage);
+                }
+            );
+        }
+
+        function advanceAfterClash() {
+            var runId = getRunId();
+
+            if (!runId) {
+                setActionOutput('runId is required.');
+                return;
+            }
+
+            postWithoutBody(
+                '/api/game-runs/' + encodeURIComponent(runId) + '/advance-after-clash',
+                function () {
+                    reloadRun(runId);
+                },
+                function (errorMessage) {
+                    setActionOutput(errorMessage);
+                }
+            );
+        }
+
+        function usePotionForHero(heroSlot) {
+            var runId = getRunId();
+            if (!runId) {
+                setActionOutput('runId is required.');
+                return;
+            }
+
+            var select = document.getElementById('use-potion-select-' + heroSlot);
+            if (!select) {
+                setActionOutput('Potion selector not found.');
+                return;
+            }
+
+            var potionId = select.value ? select.value.trim() : '';
+            if (!potionId) {
+                setActionOutput('potionId is required.');
+                return;
+            }
+
+            postJson(
+                '/api/game-runs/' + encodeURIComponent(runId) + '/use-potion',
+                {
+                    heroSlot: heroSlot,
+                    potionId: potionId
+                },
+                function () {
+                    setActionOutput('Potion used.');
+                    setTimeout(function () {
+                        reloadRun(runId);
+                    }, 400);
+                },
+                function (errorMessage) {
+                    setActionOutput(errorMessage);
+                }
+            );
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadEncounterBox();
+            loadClashResolveBox();
+            loadUsePotionBox();
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+
+</html>

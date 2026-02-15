@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Autorizar Admin</title>
+</head>
+<body>
+<h1>Simulación de autorización externa</h1>
+
+<form th:action="@{/auth}" method="post">
+    <button type="submit">Autorizar acceso</button>
+</form>
+
+<p th:text="${mensaje}" th:if="${mensaje != null}"></p>
+</body>
+</html>
